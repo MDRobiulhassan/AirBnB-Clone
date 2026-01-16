@@ -1,0 +1,50 @@
+package com.example.AirBnb_Clone.controller;
+
+import com.example.AirBnb_Clone.dto.request.HotelDTO;
+import com.example.AirBnb_Clone.service.HotelService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/admin/hotels")
+public class HotelController {
+
+    private final HotelService hotelService;
+
+    @PostMapping
+    public ResponseEntity<?> createHotel(@RequestBody HotelDTO hotelDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(hotelService.createHotel(hotelDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllHotels() {
+        return ResponseEntity.ok(hotelService.getAllHotels());
+    }
+
+    @GetMapping("/{hotelId}")
+    public ResponseEntity<?> getHotelById(@PathVariable Long hotelId) {
+        return ResponseEntity.ok(hotelService.getHotelById(hotelId));
+    }
+
+    @PutMapping("/{hotelId}")
+    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody HotelDTO hotelDTO) {
+        return ResponseEntity.ok(hotelService.updateHotel(hotelDTO,hotelId));
+    }
+
+    @DeleteMapping("/{hotelId}")
+    public ResponseEntity<?> deleteHotelById(@PathVariable Long hotelId) {
+        hotelService.deleteHotelById(hotelId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/{hotelId}")
+    public ResponseEntity<?> activateHotel(@PathVariable Long hotelId) {
+        hotelService.activateHotel(hotelId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+}

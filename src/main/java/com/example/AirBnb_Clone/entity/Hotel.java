@@ -44,4 +44,9 @@ public class Hotel {
     @Embedded
     private HotelContactInfo contactInfo;
 
+    @ManyToOne
+    private User owner;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<Room> rooms;
 }

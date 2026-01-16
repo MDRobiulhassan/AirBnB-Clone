@@ -1,10 +1,7 @@
 package com.example.AirBnb_Clone.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "inventory",
         uniqueConstraints = @UniqueConstraint(
                 name = "unique_hotel_room_date",
@@ -38,7 +36,7 @@ public class Inventory {
 
     private LocalDate date;
 
-    @Column(nullable = false, columnDefinition = "INTEGER_DEFAULT_0")
+    @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer bookedCount;
 
     @Column(nullable = false)
