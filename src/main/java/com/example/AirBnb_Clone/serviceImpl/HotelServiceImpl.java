@@ -1,7 +1,10 @@
 package com.example.AirBnb_Clone.serviceImpl;
 
 import com.example.AirBnb_Clone.dto.request.HotelDTO;
+import com.example.AirBnb_Clone.dto.request.RoomDTO;
+import com.example.AirBnb_Clone.dto.response.HotelInfoResponseDTO;
 import com.example.AirBnb_Clone.dto.response.HotelResponseDTO;
+import com.example.AirBnb_Clone.dto.response.RoomResponseDTO;
 import com.example.AirBnb_Clone.entity.Hotel;
 import com.example.AirBnb_Clone.entity.Room;
 import com.example.AirBnb_Clone.exceptions.ResourceNotFoundException;
@@ -89,6 +92,18 @@ public class HotelServiceImpl implements HotelService {
         for (Room room : hotel.getRooms()) {
             inventoryService.initializeRoomForAYear(room);
         }
+    }
+
+    @Override
+    public HotelInfoResponseDTO getHotelInfoById(Long hotelId) {
+        log.info("Getting Hotel Info with ID : {}", hotelId);
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel Not Found with ID :" + hotelId));
+
+        List<RoomResponseDTO> rooms = hotel.getRooms().stream()
+                .map(room -> modelMapper.map(room, RoomResponseDTO.class))
+                .toList();
+
+        return new HotelInfoResponseDTO(modelMapper.map(hotel, HotelResponseDTO.class), rooms);
     }
 
 }
