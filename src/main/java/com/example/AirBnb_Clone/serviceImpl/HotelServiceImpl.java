@@ -6,6 +6,7 @@ import com.example.AirBnb_Clone.entity.Hotel;
 import com.example.AirBnb_Clone.entity.Room;
 import com.example.AirBnb_Clone.exceptions.ResourceNotFoundException;
 import com.example.AirBnb_Clone.repository.HotelRepository;
+import com.example.AirBnb_Clone.repository.RoomRepository;
 import com.example.AirBnb_Clone.service.HotelService;
 import com.example.AirBnb_Clone.service.InventoryService;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ public class HotelServiceImpl implements HotelService {
     private final HotelRepository hotelRepository;
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
+    private final RoomRepository roomRepository;
 
     @Override
     public HotelResponseDTO createHotel(HotelDTO hoteldto) {
@@ -69,11 +71,12 @@ public class HotelServiceImpl implements HotelService {
     public void deleteHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Hotel Not Found with ID :" + id));
 
-        hotelRepository.deleteById(id);
 
         for (Room room : hotel.getRooms()) {
-            inventoryService.deleteFutureInventories(room);
+            inventoryService.deleteAllInventories(room);
+            roomRepository.deleteById(room.getId());
         }
+        hotelRepository.deleteById(id);
     }
 
     @Override

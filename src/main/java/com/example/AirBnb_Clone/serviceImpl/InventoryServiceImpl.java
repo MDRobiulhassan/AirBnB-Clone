@@ -1,15 +1,23 @@
 package com.example.AirBnb_Clone.serviceImpl;
 
+import com.example.AirBnb_Clone.dto.request.HotelSearchRequest;
+import com.example.AirBnb_Clone.dto.response.HotelResponseDTO;
+import com.example.AirBnb_Clone.entity.Hotel;
 import com.example.AirBnb_Clone.entity.Inventory;
 import com.example.AirBnb_Clone.entity.Room;
 import com.example.AirBnb_Clone.repository.InventoryRepository;
 import com.example.AirBnb_Clone.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @Slf4j
@@ -17,6 +25,7 @@ import java.time.LocalDate;
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public void initializeRoomForAYear(Room room) {
@@ -27,6 +36,7 @@ public class InventoryServiceImpl implements InventoryService {
             Inventory inventory = Inventory.builder()
                     .hotel(room.getHotel())
                     .room(room)
+                    .date(today)
                     .bookedCount(0)
                     .city(room.getHotel().getCity())
                     .price(room.getBasePrice())
@@ -40,8 +50,24 @@ public class InventoryServiceImpl implements InventoryService {
 
 
     @Override
-    public void deleteFutureInventories(Room room) {
-        LocalDate today = LocalDate.now();
-        inventoryRepository.deleteByDateAfterAndRoom(today, room);
+    public void deleteAllInventories(Room room) {
+        inventoryRepository.deleteByRoom(room);
+    }
+
+    @Override
+    public Page<HotelResponseDTO> searchHotels(HotelSearchRequest hotelSearchRequest) {
+        Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(), hotelSearchRequest.getSize());
+        Long dateCount = ChronoUnit.DAYS.between(hotelSearchRequest.getCheckInDate(), hotelSearchRequest.getCheckOutDate());
+
+        Page<Hotel> hotels = inventoryRepository.findHotelsWithAvailableInventory(
+                hotelSearchRequest.getCity(),
+                hotelSearchRequest.getCheckInDate(),
+                hotelSearchRequest.getCheckOutDate(),
+                hotelSearchRequest.getNumberOfRooms(),
+                dateCount,
+                pageable
+        );
+
+        return hotels.map(hotel -> modelMapper.map(hotel, HotelResponseDTO.class));
     }
 }

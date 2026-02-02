@@ -5,22 +5,22 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ApiRespone<T>{
+public class ApiResponse<T>{
 
     private LocalDateTime timestamps;
     private T data;
     private ApiError error;
 
-    public ApiRespone(){
+    public ApiResponse(){
         this.timestamps = LocalDateTime.now();
     }
 
-    public ApiRespone(T Data){
+    public ApiResponse(T Data){
         this();
         this.data = Data;
     }
 
-    public ApiRespone(ApiError error){
+    public ApiResponse(ApiError error){
         this();
         this.error = error;
     }
