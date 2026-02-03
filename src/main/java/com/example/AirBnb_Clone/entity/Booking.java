@@ -2,13 +2,11 @@ package com.example.AirBnb_Clone.entity;
 
 import com.example.AirBnb_Clone.entity.enums.BookingStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -18,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "booking")
 public class Booking {
 
@@ -57,10 +56,6 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate checkOutDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment paymentId;
-
     @ManyToMany
     @JoinTable(
             name = "booking_guest",
@@ -69,4 +64,6 @@ public class Booking {
     )
     private Set<Guest> guests;
 
+    @Column(nullable = false,precision = 10,scale = 2)
+    private BigDecimal amount;
 }

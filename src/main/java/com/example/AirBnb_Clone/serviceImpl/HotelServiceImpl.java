@@ -1,7 +1,6 @@
 package com.example.AirBnb_Clone.serviceImpl;
 
 import com.example.AirBnb_Clone.dto.request.HotelDTO;
-import com.example.AirBnb_Clone.dto.request.RoomDTO;
 import com.example.AirBnb_Clone.dto.response.HotelInfoResponseDTO;
 import com.example.AirBnb_Clone.dto.response.HotelResponseDTO;
 import com.example.AirBnb_Clone.dto.response.RoomResponseDTO;

@@ -39,4 +39,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Booking booking;
 }
